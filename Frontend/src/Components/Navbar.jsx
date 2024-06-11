@@ -13,7 +13,7 @@ function Navbar() {
   return (
     <div className="navbar">
       <h2>
-        <Link to={"/"}>Kyzen Solutions</Link>
+        <Link to={"/"}>Kryzen Solutions</Link>
       </h2>
       <ul>
         {token ? (
