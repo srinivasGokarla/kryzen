@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import "./signup.css";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
+import "./signup.css";
 
 function Login() {
   const [email, setEmail] = useState("");
@@ -15,11 +15,13 @@ function Login() {
         email: email,
         password: password,
       });
-      console.log(res);
+      console.log("Login API response:", res.data); 
       if (res.status === 200) {
-        navigate("/product-list");
-        localStorage.setItem("token", res.data.token);
-        
+        const { username, token } = res.data.data;
+        console.log("Token received on login:", token);
+        localStorage.setItem("token", token);
+        localStorage.setItem("username", username);
+        navigate(`/${username}/product-list`);
       } else {
         alert(res.data.message);
       }
@@ -31,40 +33,39 @@ function Login() {
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-    if (token) {
-      navigate("/product-list");
+    const username = localStorage.getItem("username");
+    if (token && username) {
+      navigate(`/${username}/product-list`);
     }
-  }, [navigate]); 
+  }, [navigate]);
 
   return (
-    <>
-      <div className="signupPage">
-        <h1>Login</h1>
-        <form onSubmit={handleSubmit}>
-          <input
-            type="text"
-            placeholder="Email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-          <input
-            type="password"
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-          <input type="submit" className="button" value="Login" />
-        </form>
-        <p>
-          Don't have an Account{" "}
-          <span>
-            <Link style={{ color: "red", fontWeight: "900" }} to={"/"}>
-              SignUp
-            </Link>
-          </span>{" "}
-        </p>
-      </div>
-    </>
+    <div className="signupPage">
+      <h1>Login</h1>
+      <form onSubmit={handleSubmit}>
+        <input
+          type="text"
+          placeholder="Email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+        />
+        <input
+          type="password"
+          placeholder="Password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
+        <input type="submit" className="button" value="Login" />
+      </form>
+      <p>
+        Don't have an Account{" "}
+        <span>
+          <Link style={{ color: "red", fontWeight: "900" }} to={"/"}>
+            SignUp
+          </Link>
+        </span>{" "}
+      </p>
+    </div>
   );
 }
 

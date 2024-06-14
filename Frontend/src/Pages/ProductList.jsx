@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate,useParams  } from "react-router-dom";
 
 const ProductList = () => {
+  const { username } = useParams();
   const [products, setProducts] = useState([]);
   const navigate = useNavigate();
 
@@ -10,7 +11,7 @@ const ProductList = () => {
     const fetchProducts = async () => {
       try {
         const token = localStorage.getItem("token");
-        const res = await axios.get("http://localhost:5550/api/product", {
+        const res = await axios.get(`http://localhost:5550/api/product/${username}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -22,12 +23,12 @@ const ProductList = () => {
     };
 
     fetchProducts();
-  }, []);
+  }, [username]);
 
   const handleDelete = async (id) => {
     try {
       const token = localStorage.getItem("token");
-      await axios.delete(`http://localhost:5550/api/product/${id}`, {
+      await axios.delete(`http://localhost:5550/api/product/${username}/${id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -40,32 +41,36 @@ const ProductList = () => {
 
   return (
     <>
-     <h1 className="pro">Products</h1>
-     <div className="add-product ">
-     <Link to="/add-product" className="add-product-link" >Add Product</Link>
-     </div>
-    
-    <div  className="product-list-container" >
-     
-    
-<ul>
-          {products.map((product) => (
-            <li key={product._id} className="product-item">
-              <img src={product.image} alt={product.name} className="product-image" />
-              <div className="product-details">
-                <h2> Name : {product.name}</h2>
-                <p> Price : {product.price} Rs/-</p>
-                <p>{product.type}</p>
-              </div>
-              <div className="product-actions">
-                <Link to={`/edit-product/${product._id}`} className="edit-button">Edit</Link>
-                <button onClick={() => handleDelete(product._id)} className="delete-button">Delete</button>
-              </div>
-            </li>
-          ))}
-        </ul>
+    <h1 className="pro">Products</h1>
+    <div className="add-product">
+      <Link to={`/${username}/add-product`} className="add-product-link">
+        Add Product
+      </Link>
     </div>
-    </>
+
+    <div className="product-list-container">
+      <ul>
+        {products.map((product) => (
+          <li key={product._id} className="product-item">
+            <img src={product.image} alt={product.name} className="product-image" />
+            <div className="product-details">
+              <h2> Name : {product.name}</h2>
+              <p> Price : {product.price} Rs/-</p>
+              <p>{product.type}</p>
+            </div>
+            <div className="product-actions">
+              <Link to={`/${username}/edit-product/${product._id}`} className="edit-button">
+                Edit
+              </Link>
+              <button onClick={() => handleDelete(product._id)} className="delete-button">
+                Delete
+              </button>
+            </div>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </>
     
   );
 };

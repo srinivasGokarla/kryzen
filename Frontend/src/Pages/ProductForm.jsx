@@ -4,7 +4,7 @@ import axios from "axios";
 
 
 const ProductForm = () => {
-  const { id } = useParams();
+  const { username, id } = useParams();
   const navigate = useNavigate();
   const [product, setProduct] = useState({
     name: "",
@@ -14,11 +14,13 @@ const ProductForm = () => {
   });
 
   useEffect(() => {
+    console.log("Username:", username); 
+    console.log("Product ID:", id);
     if (id) {
       const fetchProduct = async () => {
         try {
           const token = localStorage.getItem("token");
-          const res = await axios.get(`http://localhost:5550/api/product/${id}`, {
+          const res = await axios.get(`http://localhost:5550/api/product/${username}/${id}`, {
             headers: {
               Authorization: `Bearer ${token}`,
             },
@@ -30,7 +32,7 @@ const ProductForm = () => {
       };
       fetchProduct();
     }
-  }, [id]);
+  }, [id,username]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -38,19 +40,19 @@ const ProductForm = () => {
 
     try {
       if (id) {
-        await axios.put(`http://localhost:5550/api/product/${id}`, product, {
+        await axios.put(`http://localhost:5550/api/product/${username}/${id}`, product, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         });
       } else {
-        await axios.post("http://localhost:5550/api/product/create", product, {
+        await axios.post(`http://localhost:5550/api/product/${username}/create`, product, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         });
       }
-      navigate("/product-list");
+      navigate(`/${username}/product-list`);
     } catch (error) {
       console.log("Error saving product:", error);
     }
@@ -98,7 +100,7 @@ const ProductForm = () => {
         />
         <button type="submit">{id ? "Update Product" : "Add Product"}</button>
 
-        <button  className="close-button" onClick={() => navigate("/product-list")} >Close</button>
+        <button  className="close-button" onClick={() => navigate(`/${username}/product-list`)} >Close</button>
         
       </form>
     </div>

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate,Link } from "react-router-dom";
 import "./signup.css";
 
 function Signup() {
@@ -33,52 +33,52 @@ function Signup() {
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (token) {
-      navigate("/product-list");
+      const username = "extractedUsername"; 
+      navigate(`/${username}/product-list`);
     }
   }, [navigate]);
 
   return (
-    <>
-      <div className="signupPage">
-        <h1>Register</h1>
-        {message && <p>{message}</p>}
-        <form action="" onSubmit={handleSubmit}>
-          <input
-            type="text"
-            placeholder="Email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-          <input
-            type="text"
-            placeholder="User Name"
-            value={userName}
-            onChange={(e) => setUserName(e.target.value)}
-          />
-          <input
-            type="text"
-            placeholder="Phone Number"
-            value={phone}
-            onChange={(e) => setPhone(e.target.value)}
-          />
-          <input
-            type="Password"
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-          <input type="submit" className="button" value={"Register"} />
-        </form>
-        <p>
-          Already have an account?{" "}
-          <span>
-            <Link style={{ color: "red", fontWeight: "900" }} to={"/login"}>
-              Login
-            </Link>
-          </span>{" "}
-        </p>
-      </div>
-    </>
+    <div className="signupPage">
+      <h1>Register</h1>
+      {message && <p>{message}</p>}
+      <form action="" onSubmit={handleSubmit}>
+        <input
+          type="text"
+          placeholder="Email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+        />
+        <input
+          type="text"
+          placeholder="User Name"
+          value={userName}
+          onChange={(e) => setUserName(e.target.value)}
+        />
+        <input
+          type="text"
+          placeholder="Phone Number"
+          value={phone}
+          onChange={(e) => setPhone(e.target.value)}
+        />
+        <input
+          type="Password"
+          placeholder="Password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
+        <input type="submit" className="button" value={"Register"} />
+      </form>
+      <p>
+        Already have an account?{" "}
+        <span>
+          <Link style={{ color: "red", fontWeight: "900" }} to={"/login"}>
+            Login
+          </Link>
+        </span>{" "}
+      </p>
+    </div>
   );
 }
+
 export default Signup;

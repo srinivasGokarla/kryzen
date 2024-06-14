@@ -22,25 +22,49 @@ function App() {
 
   return (
     <>
-      <Navbar />
+       <Navbar />
       <Routes>
         <Route path="/" element={<Signup />} />
         <Route path="/login" element={<Login />} />
         <Route
-          path="/product-list"
-          element={isAuthenticated ? <ProductList /> : <Navigate to="/login" />}
+          path="/:username/product-list"
+          element={
+            isAuthenticated ? (
+              <ProductList />
+            ) : (
+              <Navigate to="/login" />
+            )
+          }
         />
         <Route
-          path="/add-product"
-          element={isAuthenticated ? <ProductForm /> : <Navigate to="/login" />}
+          path="/:username/add-product"
+          element={
+            isAuthenticated ? (
+              <ProductForm />
+            ) : (
+              <Navigate to="/login" />
+            )
+          }
         />
         <Route
-          path="/edit-product/:id"
-          element={isAuthenticated ? <ProductForm /> : <Navigate to="/login" />}
+          path="/:username/edit-product/:id"
+          element={
+            isAuthenticated ? (
+              <ProductForm />
+            ) : (
+              <Navigate to="/login" />
+            )
+          }
         />
         <Route
-          path="/schedule-product"
-          element={isAuthenticated ? <ScheduledProductForm /> : <Navigate to="/login" />}
+          path="/:username/schedule-product"
+          element={
+            isAuthenticated ? (
+              <ScheduledProductForm />
+            ) : (
+              <Navigate to="/login" />
+            )
+          }
         />
       </Routes>
     </>

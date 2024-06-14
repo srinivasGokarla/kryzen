@@ -1,25 +1,24 @@
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const userModel = require("../Model/UserModel");
+const User = require("../Model/UserModel");
 
 const registerUser = async (req, res) => {
   const { username, email, phone, password } = req.body;
   try {
-    const existingUser = await userModel.findOne({ email });
+    
+    const existingUser = await User.findOne({ where: { email } });
     if (existingUser) {
-      return res
-        .status(400)
-        .send({ message: "User Already Exist Please Login" });
+      return res.status(400).send({ message: "User Already Exist Please Login" });
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
-    const newUser = new userModel({
+    const newUser = await User.create({
       username,
       email,
       phone,
       password: hashedPassword,
     });
-    await newUser.save();
+
     return res.status(201).send({
       message: "User Created Success",
       data: {
@@ -34,10 +33,11 @@ const registerUser = async (req, res) => {
   }
 };
 
+
 const loginUser = async (req, res) => {
   const { email, password } = req.body;
   try {
-    const user = await userModel.findOne({ email });
+    const user = await User.findOne({ where: { email } });
     if (!user) {
       return res.status(400).send({ message: "User does not exist" });
     }
@@ -47,10 +47,8 @@ const loginUser = async (req, res) => {
       return res.status(400).send({ message: "Invalid Credentials" });
     }
 
-    const payload = { userId: user._id };
-    const token = jwt.sign(payload, process.env.JWT_SECRET, {
-      expiresIn: "1h",
-    });
+    const payload = { userId: user.id }; 
+    const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: "1h" });
 
     return res.status(200).send({
       message: "Login Successful",
@@ -66,5 +64,6 @@ const loginUser = async (req, res) => {
     return res.status(500).send({ message: "Failed to Login" });
   }
 };
+
 
 module.exports = { registerUser, loginUser };

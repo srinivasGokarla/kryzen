@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 const ScheduledProductForm = () => {
+  const { username } = useParams();
   const [product, setProduct] = useState({
     name: "",
     price: "",
@@ -18,7 +19,7 @@ const ScheduledProductForm = () => {
 
     try {
       await axios.post(
-        "http://localhost:5550/api/product/schedule",
+        `http://localhost:5550/api/product/${username}/schedule`,
         { product, minutes },
         {
           headers: {
@@ -26,7 +27,7 @@ const ScheduledProductForm = () => {
           },
         }
       );
-      navigate("/product-list");
+      navigate(`/${username}/product-list`);
     } catch (error) {
       console.log("Error scheduling product:", error);
     }
@@ -34,37 +35,42 @@ const ScheduledProductForm = () => {
 
   return (
     <div>
-      <h1>Schedule Product Addition</h1>
+      <h2>Schedule Product</h2>
       <form onSubmit={handleSubmit}>
         <input
           type="text"
-          placeholder="Name"
+          placeholder="Product Name"
           value={product.name}
           onChange={(e) => setProduct({ ...product, name: e.target.value })}
+          required
         />
         <input
           type="number"
           placeholder="Price"
           value={product.price}
           onChange={(e) => setProduct({ ...product, price: e.target.value })}
+          required
         />
         <input
           type="text"
           placeholder="Type"
           value={product.type}
           onChange={(e) => setProduct({ ...product, type: e.target.value })}
+          required
         />
         <input
-          type="text"
+          type="url"
           placeholder="Image URL"
           value={product.image}
           onChange={(e) => setProduct({ ...product, image: e.target.value })}
+          required
         />
         <input
           type="number"
-          placeholder="Time in Minutes"
+          placeholder="Minutes to Schedule"
           value={minutes}
           onChange={(e) => setMinutes(e.target.value)}
+          required
         />
         <button type="submit">Schedule Product</button>
       </form>

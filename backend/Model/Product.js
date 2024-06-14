@@ -1,45 +1,46 @@
-const { Schema, model } = require("mongoose");
 
-const productSchema = new Schema({
+const { DataTypes } = require('sequelize');
+const { sequelize } = require('../Config/db');
+const User = require('./UserModel');
+
+const Product = sequelize.define('Product', {
   name: {
-    type: String,
-    required: true,
+    type: DataTypes.STRING,
+    allowNull: false,
   },
   image: {
-    type: String,
-    required: true,
+    type: DataTypes.STRING,
+    allowNull: false,
   },
   price: {
-    type: Number,
-    required: true,
+    type: DataTypes.FLOAT,
+    allowNull: false,
   },
   type: {
-    type: String,
-    enum: [
-      "electronics",
-      "fashion",
-      "groceries",
-      "kids",
-      "home",
-      "sports",
-      "books",
-      "beauty",
-      "tools",
-      "outdoor",
-    ],
-    required: true,
+    type: DataTypes.ENUM(
+      'electronics', 'fashion', 'groceries', 'kids', 'home', 'sports', 'books', 'beauty', 'tools', 'outdoor'
+    ),
+    allowNull: false,
   },
-  rating: {
-    rate: { type: Number, default: 0 },
-    count: { type: Number, default: 0 },
+  ratingRate: {
+    type: DataTypes.FLOAT,
+    defaultValue: 0,
   },
-
-  user: {
-    type: Schema.Types.ObjectId,
-    ref: 'User',
-    required: true,
+  ratingCount: {
+    type: DataTypes.INTEGER,
+    defaultValue: 0,
+  },
+  userId: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    references: {
+      model: User,
+      key: 'id',
+    },
   },
 });
 
-const productModel = model("Product", productSchema);
-module.exports = productModel;
+User.hasMany(Product, { as: 'products', foreignKey: 'userId' });
+Product.belongsTo(User, { as: 'user', foreignKey: 'userId' });
+
+module.exports = Product;
